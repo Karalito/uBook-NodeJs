@@ -1,8 +1,9 @@
 <header class="main-header">
   <nav class="main-header__nav">
-    <a class="logo" href="/"
-      ><h1>u<span>Book</span></h1></a
-    >
+    <div class="logo">
+      <a href="/">u<span>Book</span></a>
+    </div>
+
     <ul class="main-header__item-list">
       <li class="main-header__item">
         <a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a>
@@ -29,4 +30,50 @@
       </li>
     </ul>
   </nav>
+  <div class="hamburger-menu">
+    <div class="logo">
+      <a href="/">u<span>Book</span></a>
+    </div>
+    <div>
+      <input id="menu__toggle" type="checkbox" />
+      <label class="menu__btn" for="menu__toggle">
+        <span></span>
+      </label>
+      <ul class="menu__box">
+        <li>
+          <a class="menu__item <%= path === '/' ? 'active' : '' %>" href="/"
+            >Home</a
+          >
+        </li>
+        <li>
+          <a
+            class="menu__item <%= path === '/products' ? 'active' : '' %>"
+            href="/products"
+            >Products</a
+          >
+        </li>
+        <li>
+          <a
+            class="menu__item <%= path === '/orders' ? 'active' : '' %>"
+            href="/orders"
+            >Orders</a
+          >
+        </li>
+        <li>
+          <a
+            class="menu__item <%= path === '/admin/products' ? 'active' : '' %>"
+            href="/admin/products"
+            >Admin</a
+          >
+        </li>
+        <li>
+          <a
+            class="menu__item <%= path === '/cart' ? 'active' : '' %>"
+            href="/cart"
+            >Cart</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
 </header>

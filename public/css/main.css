@@ -1,7 +1,8 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 }
 
 main {
@@ -11,8 +12,11 @@ main {
 span {
   color: #0088a9;
 }
+a {
+  text-decoration: none;
+  color: white;
+}
 .main-header {
-  width: 100%;
   height: 3.5rem;
   background: #24252a;
   color: #fff;
@@ -31,7 +35,7 @@ span {
 
 .logo {
   order: 1;
-  font-size: 1.5rem;
+  font-size: 2rem;
   text-decoration: none;
   color: #fff;
 }
@@ -62,52 +66,123 @@ span {
   cursor: pointer;
 }
 
+/* hamburger */
+
+#menu__toggle {
+  opacity: 0;
+}
+
+#menu__toggle:checked ~ .menu__btn > span {
+  transform: rotate(45deg);
+}
+#menu__toggle:checked ~ .menu__btn > span::before {
+  top: 0;
+  transform: rotate(0);
+}
+#menu__toggle:checked ~ .menu__btn > span::after {
+  top: 0;
+  transform: rotate(90deg);
+}
+#menu__toggle:checked ~ .menu__box {
+  visibility: visible;
+  left: 0;
+}
+
+.hamburger-menu {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -85%;
+}
+
+.menu__btn {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+
+  width: 26px;
+  height: 26px;
+
+  cursor: pointer;
+  z-index: 1;
+}
+
+.menu__btn > span,
+.menu__btn > span::before,
+.menu__btn > span::after {
+  display: block;
+  position: absolute;
+
+  width: 100%;
+  height: 2px;
+
+  background-color: #616161;
+
+  transition-duration: 0.25s;
+}
+.menu__btn > span::before {
+  content: '';
+  top: -8px;
+}
+.menu__btn > span::after {
+  content: '';
+  top: 8px;
+}
+
+.menu__box {
+  display: block;
+  position: fixed;
+  visibility: hidden;
+  top: 3.5rem;
+  left: -100%;
+  font-size: larger;
+  width: 300px;
+  height: 100%;
+
+  margin: 0;
+  padding: 30px 0;
+
+  list-style: none;
+
+  background-color: #24252a;
+
+  transition-duration: 0.25s;
+  z-index: 999;
+}
+
+.menu__item {
+  display: block;
+  padding: 12px 24px;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  transition-duration: 0.25s;
+}
+.menu__item:hover {
+  background-color: #0088a9;
+}
+.menu__item.active {
+  color: #0088a9;
+}
+.menu__item.active:hover {
+  color: #24252a;
+}
 .grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: stretch;
-
-
 }
 
-.card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-}
 
-.card__header,
-.card__content {
-  padding: 1rem;
-  
-}
 
-.card__header h1,
-.card__content h1,
-.card__content h2,
-.card__content p {
-  margin: 0;
-}
-
-.card__image {
-  width: 100%;
-}
-
-.card__image img {
-  width: 100%;
-}
-
-.card__actions {
-  padding: 1rem;
-  text-align: center;
-}
-
-.card__actions button,
-.card__actions a {
-  margin: 0 0.25rem;
-}
-
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .main-header__nav {
-    width: 95%;
+    display: none;
+  }
+  .hamburger-menu {
+    display: flex;
   }
 }

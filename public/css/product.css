@@ -1,3 +1,40 @@
+.card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  position: relative;
+}
+
+.card__header,
+.card__content {
+  padding: 0.5rem;
+}
+
+.card__header h1,
+.card__content h1,
+.card__content h2,
+.card__content p {
+  margin: 0;
+}
+
+.card__image {
+  width: 100%;
+  
+}
+
+.card__image img {
+  width: 100%;
+  height: 450px;
+}
+
+.card__actions {
+  padding: 1rem;
+  text-align: center;
+}
+
+.card__actions button,
+.card__actions a {
+  margin: 0 0.25rem;
+}
+
 .product-form {
   width: 20rem;
   max-width: 90%;
@@ -27,10 +64,10 @@
 button {
   font: inherit;
   border: 1px solid #24252a;
-  background: white;
+  background: #0088a9;
   border-radius: 3px;
   cursor: pointer;
-  color: black;
+  color: white;
   padding: 0.5rem;
 }
 
@@ -38,4 +75,45 @@ button:hover,
 button:active {
   background-color: #24252a;
   color: white;
+}
+
+.inside {
+  z-index: 9;
+  background: #0088a9;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 0px 0px 200px 200px;
+  transition: all 0.5s, border-radius 2s, top 1s;
+  overflow: hidden;
+}
+
+.inside:hover {
+  width: 100%;
+  right: 0;
+  top: 0;
+  border-radius: 0;
+  height: 50%;
+}
+
+.icon{
+  font-size: 28px;
+  color: white;
+  margin-left: 7px;
+}
+
+
+.contents{
+  color: white;
+  padding: 5%;
+  font-weight: 600;
+}
+
+@media (max-width: 672px) {
+  .card:nth-child(2){
+    margin-top: 20px;
+  }
+  
 }
