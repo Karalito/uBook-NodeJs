@@ -4,10 +4,10 @@
   <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
-      <% if (prods.length > 0) {%>
+      <% if (products.length > 0) {%>
       <h1>Products</h1>
       <div class="grid">
-        <% for (let product of prods ) {%>
+        <% for (let product of products ) {%>
         <article class="card product-item">
           <div class="card__image">
             <img
@@ -19,7 +19,7 @@
             <header class="card__header">
               <h1 class="product__title"><%= product.title %>  <span> <%= product.author %></span></h1>
             </header>
-            <h2 class="product__price"><%= product.price %> €</h2>
+            <h2 class="product__price"><span>Price:</span> <%= product.price %> €</h2>
           </div>
           <div class="inside">
             <div class="icon">&#x1F6C8;</div>
@@ -28,9 +28,8 @@
             </div>
           </div>
           <div class="card__actions">
-            <form action="/add-to-cart" method="POST">
-              <button class="btn">Add to Cart</button>
-            </form>   
+            <a href="/products/<%= product.id %>" class="btn">Details</a>
+            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
           </div>
         </article>
         <% } %>

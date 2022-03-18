@@ -1,1 +1,44 @@
 <%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/product-detail.css" />
+
+</head>
+<body>
+  <%- include('../includes/navigation.ejs') %>
+  <main class="">
+      <div class="columns">
+
+        <div class="column">
+            <div class="img-container">
+                <img class="product-img" src="<%= product.imgURL %>" alt="<%= product.title %>"/>
+            </div>
+        </div>
+      
+        <div class="column">
+          <div class="details">
+            <h1 class="product__title"><%= product.title %> <span><%= product.author %></span></h1>
+                <hr>
+                <p class="description"><%= product.description %></p>
+                <p class="product__price"><span>Price: </span><%= product.price %> €</p>      
+            <div class="button-container">
+      
+              <div class="" id="wishlist-container">
+                <form action="/cart" method="post" >
+                    <button class="btn">ADD TO WISHLIST</button>
+                </form>
+              </div>
+              
+              <div class="" id="buy-container">
+                <%- include('../includes/add-to-cart.ejs') %>
+              </div>
+            </div>
+      
+            <p class="small-text"><span>Standard delivery</span> 2-5 working days</p>
+            <p class="small-text"><span>Next day delivery</span> order before 2pm ($5.79)</p>
+      
+          </div>
+        </div>
+      
+      </div>
+  </main>
+</body>
+</html>

@@ -172,11 +172,10 @@ a {
 .grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
   align-items: stretch;
+
 }
-
-
 
 @media (max-width: 768px) {
   .main-header__nav {
