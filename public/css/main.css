@@ -54,7 +54,8 @@ a {
   margin: 0 1rem;
   padding: 0;
 }
-.main-header__item a, button {
+.main-header__item a,
+button {
   font: inherit;
   background: transparent;
   border: none;
@@ -65,15 +66,16 @@ a {
   font-size: large;
 }
 
-.main-header__item a:hover, button:hover,
-.main-header__item a:active, 
+.main-header__item a:hover,
+button:hover,
+.main-header__item a:active,
 .main-header__item a.active {
   color: #0088a9;
   cursor: pointer;
 }
 
 .badge {
-  background-color: #6394F8;
+  background-color: #6394f8;
   border-radius: 10px;
   color: white;
   display: inline-block;
@@ -193,9 +195,26 @@ a {
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
-
 }
 
+.user-message {
+  box-sizing: border-box;
+  border: 1px solid #0088d0;
+  background: #56bbf1;
+  border-radius: 3px;
+  color: white;
+  font-weight: 600;
+  max-width: 90%;
+  margin: auto;
+  padding: 0.5rem;
+  text-align: center;
+  width: 40rem;
+}
+
+.user-message--error {
+  border-color: red;
+  background: red;
+}
 @media (max-width: 768px) {
   .main-header__nav {
     display: none;
@@ -203,7 +222,8 @@ a {
   .hamburger-menu {
     display: flex;
   }
-  .main-header__item a:hover, button:hover{
+  .main-header__item a:hover,
+  button:hover {
     color: white;
   }
 }

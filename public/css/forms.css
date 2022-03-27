@@ -16,6 +16,7 @@
 
 .form-control input {
   height: 2rem;
+  box-sizing: border-box;
 }
 .form-control input,
 .form-control textarea {

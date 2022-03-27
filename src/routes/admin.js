@@ -10,7 +10,9 @@ const {
   deleteProduct,
   getProducts,
 } = require('../controllers/admin');
+
 const isAuth = require('../middleware/is-auth');
+
 router.get('/add-product', isAuth, getAddProduct);
 router.post('/add-product', isAuth, postAddProduct);
 

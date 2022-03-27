@@ -6,11 +6,18 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   <main>
+    <% if(errorMessage) {%>
+      <div class="user-message user-message--error"> <%= errorMessage %></div>
+      <%} %>
     <form class="product-form" action="/register" method="POST">
       <h1>SIGN UP</h1>
       <div class="form-control">
-        <label for="username">Username</label>
-        <input type="username" name="username" id="username" required />
+        <label for="firstname">First Name</label>
+        <input type="firstname" name="firstname" id="firstname" required />
+      </div>
+      <div class="form-control">
+        <label for="lastname">Last Name</label>
+        <input type="lastname" name="lastname" id="lastname" required />
       </div>
       <div class="form-control">
         <label for="email">Email Address</label>

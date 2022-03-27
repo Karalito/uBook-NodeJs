@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const conFlash = require('connect-flash');
 
 const MONGODB_URI = process.env.MONGO_DB_KEY;
 const SESSION_SECRET_KEY = process.env.SESSION_SECRET_KEY;
@@ -42,6 +43,7 @@ app.use(
   })
 );
 app.use(csrfProtection);
+app.use(conFlash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
