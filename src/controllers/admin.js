@@ -7,7 +7,6 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'uBook - Admin',
     path: '/admin/products',
     editing: false,
-    isAuthenticated:  req.session.isAuthenticated,
   });
 };
 
@@ -28,7 +27,6 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     quantity: quantity,
     userId: userId,
-    isAuthenticated: req.session.isAuthenticated,
   });
 
   product
@@ -55,7 +53,6 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: `uBook - Edit ${product.title}`,
         path: '/admin/products',
         editing: editMode,
-        isAuthenticated: req.session.isAuthenticated,
       });
     })
     .catch((err) => {
@@ -104,7 +101,6 @@ exports.getProducts = (req, res, next) => {
         products: products,
         pageTitle: 'uBook - Admin',
         path: '/admin/products',
-        isAuthenticated:  req.session.isAuthenticated,
       });
     })
     .catch((err) => {

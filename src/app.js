@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 
 const express = require('express');
@@ -7,9 +9,8 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 
-const MONGODB_URI =
-  'mongodb+srv://admin:GyNzMeNAC156cx6j@ubook-cluster.fxhvt.mongodb.net/uBook?retryWrites=true&w=majority';
-
+const MONGODB_URI = process.env.MONGO_DB_KEY;
+const SESSION_SECRET_KEY = process.env.SESSION_SECRET_KEY;
 const User = require('./models/user');
 // Controllers
 const errorController = require('./controllers/error');
@@ -34,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 app.use(
   session({
-    secret: 'q3Y2OksUMhme5oiy7oNtOHKhULo0Bt9bQk',
+    secret: SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     store: store,

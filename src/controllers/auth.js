@@ -6,7 +6,7 @@ exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'uBook - Login',
-    isAuthenticated: false,
+    
   });
 };
 
@@ -50,7 +50,7 @@ exports.getRegister = (req, res, next) => {
   res.render('auth/register', {
     path: '/register',
     pageTitle: 'uBook - Register',
-    isAuthenticated: false,
+    
   });
 };
 

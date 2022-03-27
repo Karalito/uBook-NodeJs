@@ -9,7 +9,7 @@ exports.getIndex = (req, res, next) => {
       products: products,
       pageTitle: 'uBook - Home',
       path: '/',
-      isAuthenticated: req.session.isAuthenticated,
+
     });
   });
 };
@@ -21,7 +21,7 @@ exports.getProducts = (req, res, next) => {
       products: products,
       pageTitle: 'uBook - Products',
       path: '/products',
-      isAuthenticated: req.session.isAuthenticated,
+
     });
   });
 };
@@ -33,7 +33,7 @@ exports.getProduct = (req, res, next) => {
       product: product,
       pageTitle: `uBook - ${product.title}`,
       path: '/products/:id',
-      isAuthenticated: req.session.isAuthenticated,
+
     });
   });
 };
@@ -47,7 +47,7 @@ exports.getOrders = (req, res, next) => {
         path: '/orders',
         pageTitle: 'uBook - Your Orders',
         orders: orders,
-        isAuthenticated: req.session.isAuthenticated,
+  
       });
     })
     .catch((err) => console.log(err));
@@ -96,7 +96,7 @@ exports.getCart = (req, res, next) => {
         pageTitle: 'uBook - Cart',
         products: products,
         total: total,
-        isAuthenticated: req.session.isAuthenticated,
+  
       });
     })
     .catch((err) => {
@@ -135,6 +135,5 @@ exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
     path: '/checkout',
     pageTitle: 'uBook - Checkout',
-    isAuthenticated: req.session.isAuthenticated,
   });
 };
