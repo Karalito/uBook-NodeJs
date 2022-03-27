@@ -2,10 +2,9 @@
   margin: 1rem 0;
 }
 
-.form-control label{
+.form-control label {
   font-size: larger;
   font-weight: 600;
-
 }
 .form-control label,
 .form-control input,
@@ -15,7 +14,7 @@
   margin-bottom: 0.25rem;
 }
 
-.form-control input{
+.form-control input {
   height: 2rem;
 }
 .form-control input,
@@ -28,4 +27,17 @@
 .form-control input:focus,
 .form-control textarea:focus {
   outline-color: #24252a;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.link {
+  text-decoration: underline;
+  margin: 1rem 0 0;
+  cursor: pointer;
+  color: #24252a;
+  width: auto;
 }

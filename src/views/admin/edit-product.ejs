@@ -44,7 +44,7 @@
           required 
           rows="5" 
           maxlength="500" 
-          ><% if (editing) { %><%= product.description %><% } %> </textarea>
+          ><% if (editing) { %><%= product.description %><% } %></textarea>
         </div>
         <div class="form-control">
           <label for="price">Price</label>
@@ -57,9 +57,21 @@
           pattern="^\d*(\.\d{0,2})?$" 
           value="<% if (editing) { %><%= product.price %><% } %>"/>
         </div>
+        <div class="form-control">
+          <label for="quantity">Quantity</label>
+          <input 
+          type="number" 
+          name="quantity" 
+          id="quantity" 
+          required 
+          min="0"
+          pattern="^([0-9][0-9]{0,2}|1000)$" 
+          value="<% if (editing) { %><%= product.quantity %><% } %>"/>
+        </div>
         <% if (editing) { %>
-          <input type="hidden" value="<%= product.id %>" name="productId">
+          <input type="hidden" value="<%= product._id %>" name="productId">
         <% } %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <button class="btn" style="width:100%" type="submit">
           <% if (editing) { %> Update Product <% } else { %> Add Product <% } %>
         </button>

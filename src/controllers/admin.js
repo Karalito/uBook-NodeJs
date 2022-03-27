@@ -7,6 +7,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'uBook - Admin',
     path: '/admin/products',
     editing: false,
+    isAuthenticated:  req.session.isAuthenticated,
   });
 };
 
@@ -16,10 +17,28 @@ exports.postAddProduct = (req, res, next) => {
   const imgURL = req.body.imgURL;
   const description = req.body.description;
   const price = req.body.price;
-  // Setting id to null due to save serving as update aswell
-  const product = new Product(null, title, author, imgURL, description, price);
-  product.save();
-  res.redirect('/');
+  const quantity = req.body.quantity;
+  const userId = req.user._id;
+
+  const product = new Product({
+    title: title,
+    author: author,
+    imgURL: imgURL,
+    description: description,
+    price: price,
+    quantity: quantity,
+    userId: userId,
+    isAuthenticated: req.session.isAuthenticated,
+  });
+
+  product
+    .save()
+    .then((result) => {
+      res.redirect('/admin/products');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -28,48 +47,67 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) res.redirect('/');
 
   const productId = req.params.productId;
-  Product.fetchById(productId, (product) => {
-    if (!product) res.redirect('/');
-    res.render('admin/edit-product', {
-      product: product,
-      pageTitle: `uBook - Edit ${product.title}`,
-      path: '/admin/products',
-      editing: editMode,
+
+  Product.findById(productId)
+    .then((product) => {
+      res.render('admin/edit-product', {
+        product: product,
+        pageTitle: `uBook - Edit ${product.title}`,
+        path: '/admin/products',
+        editing: editMode,
+        isAuthenticated: req.session.isAuthenticated,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 exports.postEditProduct = (req, res, next) => {
-  console.log(req.body.productId);
   const productId = req.body.productId;
   const title = req.body.title;
   const author = req.body.author;
   const imgURL = req.body.imgURL;
   const description = req.body.description;
   const price = req.body.price;
-  const updatedProduct = new Product(
-    productId,
-    title,
-    author,
-    imgURL,
-    description,
-    price
-  );
-  updatedProduct.save();
-  res.redirect('/admin/products');
+  const quantity = req.body.quantity;
+  const userId = req.user._id;
+
+  Product.findById(productId)
+    .then((product) => {
+      product.title = title;
+      product.author = author;
+      product.imgURL = imgURL;
+      product.description = description;
+      product.price = price;
+      product.quantity = quantity;
+      product.userId = userId;
+      return product.save();
+    })
+    .then((result) => res.redirect('/admin/products'))
+    .catch((err) => console.log(err));
 };
 
-exports.deleteProduct = (req,res, next) =>{
+exports.deleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteProductById(productId)
-  res.redirect('/admin/products');
-}
+  Product.findByIdAndRemove(productId)
+    .then(() => {
+      res.redirect('/admin/products');
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('admin/products', {
-      products: products,
-      pageTitle: 'uBook - Admin',
-      path: '/admin/products',
+  Product.find()
+    .then((products) => {
+      res.render('admin/products', {
+        products: products,
+        pageTitle: 'uBook - Admin',
+        path: '/admin/products',
+        isAuthenticated:  req.session.isAuthenticated,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };

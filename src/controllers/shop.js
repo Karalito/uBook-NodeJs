@@ -1,82 +1,133 @@
 // All logic related to shop (what user sees)
 
 const Product = require('../models/product');
-const Cart = require('../models/cart');
+const Order = require('../models/order');
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('shop/index', {
+  Product.find().then((products) => {
+    res.render('shop/product-list', {
       products: products,
-      pageTitle: 'uBook - Index',
+      pageTitle: 'uBook - Home',
       path: '/',
+      isAuthenticated: req.session.isAuthenticated,
     });
   });
 };
 
 // Product Controllers
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
+  Product.find().then((products) => {
     res.render('shop/product-list', {
       products: products,
       pageTitle: 'uBook - Products',
       path: '/products',
+      isAuthenticated: req.session.isAuthenticated,
     });
   });
 };
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.fetchById(productId, (product) => {
+  Product.findById(productId).then((product) => {
     res.render('shop/product-detail', {
       product: product,
       pageTitle: `uBook - ${product.title}`,
       path: '/products/:id',
+      isAuthenticated: req.session.isAuthenticated,
     });
   });
 };
 
 // Order Controllers
 exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'uBook - Orders',
-  });
+  // Getting orders that are of users id
+  Order.find({ 'user.userId': req.user._id })
+    .then((orders) => {
+      res.render('shop/orders', {
+        path: '/orders',
+        pageTitle: 'uBook - Your Orders',
+        orders: orders,
+        isAuthenticated: req.session.isAuthenticated,
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
+exports.postOrder = (req, res, next) => {
+  req.user
+    .populate('cart.items.productId')
+    .then((user) => {
+      const products = user.cart.items.map((prod) => {
+        // Returning all data related to product
+        return { quantity: prod.quantity, product: { ...prod.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          userId: req.user._id,
+        },
+        products: products,
+      });
+      return order.save();
+    })
+    .then((result) => {
+      req.user.clearCart();
+      res.redirect('/orders');
+    })
+    .catch((err) => console.log(err));
+};
+exports.clearCart = (req, res, next) => {
+  req.user
+    .clearCart()
+    .then((result) => {
+      res.redirect('/cart');
+    })
+    .catch((err) => console.log(err));
+};
 // Cart Controllers
+
 exports.getCart = (req, res, next) => {
-  Cart.fetchCart((cart) => {
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      for (product of products) {
-        const cartProductData = cart.products.find((p) => p.id === product.id);
-        if (cartProductData) {
-          cartProducts.push({ productData: product, qty: cartProductData.qty });
-        }
-      }
+  req.user
+    .populate('cart.items.productId')
+    .then((user) => {
+      const products = user.cart.items;
+      const total = user.cart.total;
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'uBook - Cart',
-        products: cartProducts,
+        products: products,
+        total: total,
+        isAuthenticated: req.session.isAuthenticated,
       });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  Product.fetchById(productId, (product) => {
-    Cart.addProduct(productId, product.price);
-  });
-  res.redirect('/cart');
+  Product.findById(productId)
+    .then((product) => {
+      return req.user.addToCart(product);
+    })
+    .then((result) => {
+      res.redirect('/cart');
+    })
+    .catch((err) => {
+      console.log('Err', err);
+    });
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
+exports.postDeleteCartProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.fetchById(productId, (product) => {
-    Cart.deleteCartProduct(productId, product.price);
-    res.redirect('/cart');
-  });
+  Product.findById(productId)
+    .then((product) => {
+      req.user
+        .deleteFromCart(product)
+        .then((result) => res.redirect('/cart'))
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
 };
 
 // Checkout Controllers
@@ -84,5 +135,6 @@ exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
     path: '/checkout',
     pageTitle: 'uBook - Checkout',
+    isAuthenticated: req.session.isAuthenticated,
   });
 };

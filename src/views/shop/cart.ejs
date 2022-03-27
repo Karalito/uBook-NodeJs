@@ -1,25 +1,61 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/product.css" />
+<link rel="stylesheet" href="/css/cart.css" />
 </head>
+
 <body>
   <%- include('../includes/navigation.ejs') %>
   <main>
     <% if(products.length > 0) { %>
-      <ul>
-      <% products.forEach(p => { %>
-        <li>
-          <p> <%= p.productData.title %> (<%= p.qty %>)</p>
+    <div class="cart-container">
+      <div class="header">
+        <h3 class="heading">Shopping Cart</h3>
+        <form action="/clear-cart" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button class="action">Remove all</button>
+        </form>
+      </div>
+      <% products.forEach(product => { %>
+      <div class="cart-items">
+        <div class="img-box">
+          <img src="<%= product.productId.imgURL %>" alt="<%= product.productId.title %>" style="width: 140px; height: 200px;" />
+        </div>
+        <div class="about">
+          <h2 class="title"><%= product.productId.title %></h2>
+          <h3 class="description"><%= product.productId.description %></h3>
+        </div>
+        <div class="counter">
+          <div class="btn-counter">-</div>
+          <div class="count"><%= product.quantity %></div>
+          <div class="btn-counter">+</div>
+        </div>
+        <div class="prices">
+          <div class="amount"><%= product.productId.price %>€</div>
           <form action="/cart-delete-item" method="POST">
-            <input type="hidden" value="<%= p.productData.id %>" name="productId">
-            <button class="btn" type="submit">Delete</button>
+            <input type="hidden" value="<%= product.productId._id %>" name="productId">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button class="delete-btn" type="submit">X</button>
           </form>
-        </li>
+        </div>
+      </div>
       <% }) %>
-    </ul>
-    <p>Total Price:  </p>
-      <% } else { %>
-      <h2>No Products in Cart</h2>
-      <% } %>
-</main>
+      <hr>
+      <div class="checkout">
+        <div class="total">
+
+          <div class="subtotal">Total</div>
+          <div class="total-amount"><%= total %>€</div>
+        </div>
+        <form action="/create-order" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button type="submit" class="btn" style="width: 100%; margin-top: 3%;">Checkout</button>
+        </form>
+      </div>
+    </div>
+    <% } else { %>
+    <h2>No Products in Cart</h2>
+    <% } %>
+  </main>
 </body>
+
 </html>

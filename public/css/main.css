@@ -23,6 +23,9 @@ a {
   padding: 0 1.5rem;
   justify-content: center;
   display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .main-header__nav {
@@ -51,7 +54,10 @@ a {
   margin: 0 1rem;
   padding: 0;
 }
-.main-header__item a {
+.main-header__item a, button {
+  font: inherit;
+  background: transparent;
+  border: none;
   text-decoration: none;
   color: #fff;
   transition: color 0.3s ease-in-out;
@@ -59,11 +65,24 @@ a {
   font-size: large;
 }
 
-.main-header__item a:hover,
-.main-header__item a:active,
+.main-header__item a:hover, button:hover,
+.main-header__item a:active, 
 .main-header__item a.active {
   color: #0088a9;
   cursor: pointer;
+}
+
+.badge {
+  background-color: #6394F8;
+  border-radius: 10px;
+  color: white;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 7px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 /* hamburger */
@@ -183,5 +202,8 @@ a {
   }
   .hamburger-menu {
     display: flex;
+  }
+  .main-header__item a:hover, button:hover{
+    color: white;
   }
 }

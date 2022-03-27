@@ -13,6 +13,7 @@
           >Products</a
         >
       </li>
+      <% if (isAuthenticated) {%>
       <li class="main-header__item">
         <a class="<%= path === '/orders' ? 'active' : '' %>" href="/orders"
           >Orders</a
@@ -26,8 +27,21 @@
         >
       </li>
       <li class="main-header__item">
-        <a class="<% path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a>
+        <a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a>
       </li>
+      <li class="main-header__item">
+        <form action="/logout" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button type="submit">Logout</button>
+        </form>
+      </li>
+      <% }else{ %>
+      <li class="main-header__item">
+        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login"
+          >Login</a
+        >
+      </li>
+      <% } %>
     </ul>
   </nav>
   <div class="hamburger-menu">
@@ -52,6 +66,7 @@
             >Products</a
           >
         </li>
+        <% if (isAuthenticated) {%>
         <li>
           <a
             class="menu__item <%= path === '/orders' ? 'active' : '' %>"
@@ -70,9 +85,30 @@
           <a
             class="menu__item <%= path === '/cart' ? 'active' : '' %>"
             href="/cart"
-            >Cart</a
+            >Cart <span class="badge">3</span></a
           >
         </li>
+        <li>
+          <form action="/logout" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button
+              class="menu__item"
+              style="width: 100%; text-align: left"
+              type="submit"
+            >
+              Logout
+            </button>
+          </form>
+        </li>
+        <% }else{ %>
+        <li>
+          <a
+            class="menu__item <%= path === '/login' ? 'active' : '' %>"
+            href="/login"
+            >Login</a
+          >
+        </li>
+        <% } %>
       </ul>
     </div>
   </div>
