@@ -1,6 +1,22 @@
+require('dotenv').config();
+
+const crypto = require('crypto');
+
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
+
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_user: SENDGRID_API_KEY,
+    },
+  })
+);
+
 // Login
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error');
@@ -113,6 +129,16 @@ exports.postRegister = (req, res, next) => {
                 'User is successfully created. You may now login.'
               );
               res.redirect('/login');
+              return transporter
+                .sendMail({
+                  to: email,
+                  from: 's036803@ad.viko.lt',
+                  subject: 'Registered Successfully',
+                  html: '<h1>You Successfully Signed Up to <a href="http://127.0.0.1:8070">uBook</a></h1>',
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             });
         })
         .catch((err) => {
@@ -120,4 +146,65 @@ exports.postRegister = (req, res, next) => {
         });
     }
   }
+};
+
+// Account recovery
+
+exports.getRecover = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render('auth/recover-account', {
+    path: '/recover-account',
+    pageTitle: 'Account Recovery',
+    errorMessage: message,
+  });
+};
+
+exports.postRecover = (req, res, next) => {
+  const userEmail = req.body.email;
+
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect('/recover-account');
+    }
+
+    const token = buffer.toString('hex');
+
+    User.findOne({ email: userEmail })
+      .then((user) => {
+        if (!user) {
+          req.flash('error', "Account with provided Email doesn't exist!");
+          return res.redirect('/recover-account');
+        }
+        user.resetToken = token;
+        // Using miliseconds 30min
+        user.resetTokenExpires = Date.now() + 1800000;
+
+        return user.save();
+      })
+      .then((result) => {
+        req.flash('error', 'Check your Email for further instructions');
+        res.redirect('/recover-account');
+        transporter.sendMail({
+          to: userEmail,
+          from: 's036803@ad.viko.lt',
+          subject: 'Password reset',
+          html: `
+          <p>You have requested to reset your uBook password.</p>
+          <p>If you don't want to change your password Ignore this email, otherwise proceed.</p>
+          <p>Click this <a href="http://localhost:8070/recover-account/${token}">LINK</a> to set a new password.<p/>
+          <p>Or paste this link into your browser: http://localhost:8070/recover-account/${token} </p>
+          <p>Important! Password recovery link expires after 30 minutes!</p>
+          `,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 };
