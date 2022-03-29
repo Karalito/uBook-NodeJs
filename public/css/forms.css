@@ -27,7 +27,7 @@
 
 .form-control input:focus,
 .form-control textarea:focus {
-  outline-color: #24252a;
+  outline-color: #0088a9;
 }
 
 .links {
@@ -41,4 +41,9 @@
   cursor: pointer;
   color: #24252a;
   width: auto;
+}
+
+.form-control input.invalid,
+.form-control textarea.invalid {
+  border-color: red;
 }

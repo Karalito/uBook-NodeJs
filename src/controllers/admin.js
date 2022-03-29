@@ -1,4 +1,5 @@
 // All logic related to admin
+const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 
@@ -7,6 +8,9 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'uBook - Admin',
     path: '/admin/products',
     editing: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -19,6 +23,27 @@ exports.postAddProduct = (req, res, next) => {
   const quantity = req.body.quantity;
   const userId = req.user._id;
 
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: `uBook - Add Product`,
+      path: '/admin/edit-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: title,
+        author: author,
+        imgURL: imgURL,
+        description: description,
+        price: price,
+        quantity: quantity,
+        userId: userId,
+      },
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
   const product = new Product({
     title: title,
     author: author,
@@ -51,8 +76,11 @@ exports.getEditProduct = (req, res, next) => {
       res.render('admin/edit-product', {
         product: product,
         pageTitle: `uBook - Edit ${product.title}`,
-        path: '/admin/products',
+        path: '/admin/edit-product',
         editing: editMode,
+        hasError: false,
+        errorMessage: null,
+        validationErrors: [],
       });
     })
     .catch((err) => {
@@ -69,6 +97,28 @@ exports.postEditProduct = (req, res, next) => {
   const price = req.body.price;
   const quantity = req.body.quantity;
   const userId = req.user._id;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: `uBook - Edit ${title}`,
+      path: '/admin/edit-product',
+      editing: true,
+      hasError: true,
+      product: {
+        _id: productId,
+        title: title,
+        author: author,
+        imgURL: imgURL,
+        description: description,
+        price: price,
+        quantity: quantity,
+      },
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
 
   Product.findById(productId)
     .then((product) => {

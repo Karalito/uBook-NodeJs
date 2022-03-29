@@ -5,68 +5,77 @@
   <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
+      <% if(errorMessage) {%>
+        <div class="user-message user-message--error"> <%= errorMessage %></div>
+        <%} %>
       <h2> <% if (editing) { %>Update Product<% } else { %>Add Product<% } %> </h2>
       <form class="product-form" 
       action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" 
       method="POST">
         <div class="form-control">
           <label for="title">Title</label>
-          <input 
+          <input
+          class="<%= validationErrors.find(e=>e.param === 'title') ? 'invalid' : '' %>" 
           type="text" 
           name="title" 
           id="title" 
           required 
-          value="<% if (editing) { %><%= product.title %><% } %>"/>
+          value="<% if (editing || hasError) { %><%= product.title %><% } %>"/>
         </div>
         <div class="form-control">
           <label for="author">Author</label>
           <input 
+          class="<%= validationErrors.find(e=>e.param === 'author') ? 'invalid' : '' %>" 
           type="text" 
           name="author" 
           id="author" 
           required 
-          value="<% if (editing) { %><%= product.author %><% } %>"/>
+          value="<% if (editing || hasError) { %><%= product.author %><% } %>"/>
         </div>
         <div class="form-control">
           <label for="imgURL">Image URL</label>
-          <input 
+          <input
+          class="<%= validationErrors.find(e=>e.param === 'imgURL') ? 'invalid' : '' %>" 
           type="text" 
           name="imgURL" 
           id="imgURL" 
           required 
-          value="<% if (editing) { %><%= product.imgURL %><% } %>"/>
+          value="<% if (editing || hasError) { %><%= product.imgURL %><% } %>"/>
         </div>
         <div class="form-control">
           <label for="description">Description</label>
           <textarea 
+          class="<%= validationErrors.find(e=>e.param === 'description') ? 'invalid' : '' %>" 
           name="description" 
           id="description" 
           required 
           rows="5" 
           maxlength="500" 
-          ><% if (editing) { %><%= product.description %><% } %></textarea>
+          ><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
         </div>
         <div class="form-control">
           <label for="price">Price</label>
           <input 
+          class="<%= validationErrors.find(e=>e.param === 'price') ? 'invalid' : '' %>" 
           type="number" 
           name="price" 
           id="price" 
           required 
           step="0.01" 
           pattern="^\d*(\.\d{0,2})?$" 
-          value="<% if (editing) { %><%= product.price %><% } %>"/>
+          value="<% if (editing || hasError) { %><%= product.price %><% } %>"/>
         </div>
         <div class="form-control">
           <label for="quantity">Quantity</label>
-          <input 
+          <input
+          class="<%= validationErrors.find(e=>e.param === 'quantity') ? 'invalid' : '' %>" 
           type="number" 
           name="quantity" 
           id="quantity" 
           required 
           min="0"
           pattern="^([0-9][0-9]{0,2}|1000)$" 
-          value="<% if (editing) { %><%= product.quantity %><% } %>"/>
+          value="<% if (editing || hasError) { %><%= product.quantity %><% } %>"/>
         </div>
         <% if (editing) { %>
           <input type="hidden" value="<%= product._id %>" name="productId">

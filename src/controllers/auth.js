@@ -5,9 +5,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
-
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const transporter = nodemailer.createTransport(
@@ -30,19 +30,34 @@ exports.getLogin = (req, res, next) => {
     path: '/login',
     pageTitle: 'uBook - Login',
     errorMessage: message,
+    oldInput: {
+      email: '',
+      password: '',
+    },
+    validationErrors: [],
   });
 };
 
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'uBook - Login',
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+      },
+      validationErrors: errors.array(),
+    });
+  }
   User.findOne({ email: email })
     .then((user) => {
-      if (!user) {
-        req.flash('error', 'Invalid email or password');
-        return res.redirect('/login');
-      }
-
       bcrypt
         .compare(password, user.password)
         .then((doMatch) => {
@@ -55,8 +70,16 @@ exports.postLogin = (req, res, next) => {
               res.redirect('/');
             });
           }
-          req.flash('error', 'Invalid email or password');
-          res.redirect('/login');
+          return res.status(422).render('auth/login', {
+            path: '/login',
+            pageTitle: 'uBook - Login',
+            errorMessage: 'Invalid email or password',
+            oldInput: {
+              email: email,
+              password: password,
+            },
+            validationErrors: [],
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -85,6 +108,14 @@ exports.getRegister = (req, res, next) => {
     path: '/register',
     pageTitle: 'uBook - Register',
     errorMessage: message,
+    oldInput: {
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
+      password2: '',
+    },
+    validationErrors: [],
   });
 };
 
@@ -95,58 +126,58 @@ exports.postRegister = (req, res, next) => {
   const password = req.body.password;
   const password2 = req.body.password2;
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/register', {
+      path: '/register',
+      pageTitle: 'uBook - Register',
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password,
+        password2: password2,
+      },
+      validationErrors: errors.array(),
+    });
+  }
   if (!firstname || !lastname || !email || !password || !password2) {
     req.flash('error', 'Fill in all fields !');
     return res.redirect('/register');
   } else {
-    if (password !== password2) {
-      req.flash('error', 'Passwords must match !');
-      return res.redirect('/register');
-    } else {
-      User.findOne({ email: email })
-        .then((user) => {
-          if (user) {
-            req.flash(
-              'error',
-              'User with this Email already exists, please provide different one.'
-            );
-            return res.redirect('/register');
-          }
-          // Implement username check aswell
-          return bcrypt
-            .hash(password, 12)
-            .then((hashedPassword) => {
-              const user = new User({
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
-                cart: { items: [], total: 0 },
-              });
-              return user.save();
-            })
-            .then((result) => {
-              req.flash(
-                'success',
-                'User is successfully created. You may now login.'
-              );
-              res.redirect('/login');
-              return transporter
-                .sendMail({
-                  to: email,
-                  from: 's036803@ad.viko.lt',
-                  subject: 'Registered Successfully',
-                  html: '<h1>You Successfully Signed Up to <a href="http://127.0.0.1:8070">uBook</a></h1>',
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-            });
-        })
-        .catch((err) => {
-          console.log(err);
+    return bcrypt
+      .hash(password, 12)
+      .then((hashedPassword) => {
+        const user = new User({
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          password: hashedPassword,
+          cart: { items: [], total: 0 },
         });
-    }
+        return user.save();
+      })
+      .then((result) => {
+        req.flash(
+          'success',
+          'User is successfully created. You may now login.'
+        );
+        res.redirect('/login');
+        return transporter
+          .sendMail({
+            to: email,
+            from: 's036803@ad.viko.lt',
+            subject: 'Registered Successfully',
+            html: '<h1>You Successfully Signed Up to <a href="http://127.0.0.1:8070">uBook</a></h1>',
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 };
 
@@ -238,15 +269,22 @@ exports.getResetPassword = (req, res, next) => {
 exports.postResetPassword = (req, res, next) => {
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/reset-password', {
+      path: `/reset-password/${passwordToken}`,
+      pageTitle: 'Reset Password',
+      errorMessage: errors.array()[0].msg,
+      userId: userId,
+      passwordToken: passwordToken,
+    });
+  }
+
   const password = req.body.password;
-  const password2 = req.body.password2;
 
   let resetUser;
 
-  if (password !== password2) {
-    req.flash('error', 'Passwords must match !');
-    return res.redirect(`/reset-password/${passwordToken}`);
-  }
   User.findOne({
     resetToken: passwordToken,
     resetTokenExpires: { $gt: Date.now() },
