@@ -12,14 +12,15 @@ const {
 } = require('../controllers/admin');
 
 const isAuth = require('../middleware/is-auth');
+const isAdmin = require('../middleware/is-admin');
 
-router.get('/add-product', isAuth, getAddProduct);
-router.post('/add-product', isAuth, postAddProduct);
+router.get('/add-product', isAuth, isAdmin, getAddProduct);
+router.post('/add-product', isAuth, isAdmin, postAddProduct);
 
-router.get('/edit-product/:productId', isAuth, getEditProduct);
-router.post('/edit-product', isAuth, postEditProduct);
-router.post('/delete-product', isAuth, deleteProduct);
+router.get('/edit-product/:productId', isAuth, isAdmin, getEditProduct);
+router.post('/edit-product', isAuth, isAdmin, postEditProduct);
+router.post('/delete-product', isAuth, isAdmin, deleteProduct);
 
-router.get('/products', isAuth, getProducts);
+router.get('/products', isAuth, isAdmin, getProducts);
 
 module.exports = router;

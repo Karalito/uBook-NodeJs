@@ -8,6 +8,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
 
+
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -48,6 +49,7 @@ exports.postLogin = (req, res, next) => {
           if (doMatch) {
             req.session.isAuthenticated = true;
             req.session.user = user;
+            req.session.isAdmin = user.isAdmin;
             return req.session.save((err) => {
               console.log(err);
               res.redirect('/');
@@ -197,8 +199,8 @@ exports.postRecover = (req, res, next) => {
           html: `
           <p>You have requested to reset your uBook password.</p>
           <p>If you don't want to change your password Ignore this email, otherwise proceed.</p>
-          <p>Click this <a href="http://localhost:8070/recover-account/${token}">LINK</a> to set a new password.<p/>
-          <p>Or paste this link into your browser: http://localhost:8070/recover-account/${token} </p>
+          <p>Click this <a href="http://localhost:8070/reset-password/${token}">LINK</a> to set a new password.<p/>
+          <p>Or paste this link into your browser: http://localhost:8070/reset-password/${token} </p>
           <p>Important! Password recovery link expires after 30 minutes!</p>
           `,
         });
@@ -207,4 +209,63 @@ exports.postRecover = (req, res, next) => {
         console.log(err);
       });
   });
+};
+
+exports.getResetPassword = (req, res, next) => {
+  const token = req.params.token;
+  // $gt is greater than
+  User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } })
+    .then((user) => {
+      let message = req.flash('error');
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+      res.render('auth/reset-password', {
+        path: '/reset-password',
+        pageTitle: 'Reset Password',
+        errorMessage: message,
+        userId: user._id.toString(),
+        passwordToken: token,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postResetPassword = (req, res, next) => {
+  const userId = req.body.userId;
+  const passwordToken = req.body.passwordToken;
+  const password = req.body.password;
+  const password2 = req.body.password2;
+
+  let resetUser;
+
+  if (password !== password2) {
+    req.flash('error', 'Passwords must match !');
+    return res.redirect(`/reset-password/${passwordToken}`);
+  }
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpires: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(password, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpires = undefined;
+      return resetUser.save();
+    })
+    .then((result) => {
+      res.redirect('/login');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };

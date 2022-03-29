@@ -8,6 +8,8 @@ const {
   postRegister,
   getRecover,
   postRecover,
+  getResetPassword,
+  postResetPassword,
 } = require('../controllers/auth');
 
 const router = express.Router();
@@ -26,6 +28,6 @@ router.get('/recover-account', getRecover);
 router.post('/recover-account', postRecover);
 
 // Password reset routes
-router.get('/reset-password');
-router.post('/reset-password');
+router.get('/reset-password/:token', getResetPassword);
+router.post('/reset-password', postResetPassword);
 module.exports = router;

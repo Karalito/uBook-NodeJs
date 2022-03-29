@@ -23,6 +23,7 @@ const userSchema = new Schema({
     ],
     total: { type: Number, required: true },
   },
+  isAdmin: {type: Boolean, required: true, default: false}
 });
 
 userSchema.methods.addToCart = function (product) {
@@ -44,7 +45,6 @@ userSchema.methods.addToCart = function (product) {
     });
   }
   const total = (this.cart.total + product.price).toFixed(2);
-  console.log(total);
   const updatedCart = {
     items: updatedItems,
     total: total,
