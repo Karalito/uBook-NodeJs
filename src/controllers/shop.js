@@ -1,7 +1,12 @@
 // All logic related to shop (what user sees)
+const fs = require('fs');
+const path = require('path');
+
+const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
+
 
 exports.getIndex = (req, res, next) => {
   Product.find().then((products) => {
@@ -58,15 +63,27 @@ exports.postOrder = (req, res, next) => {
     .populate('cart.items.productId')
     .then((user) => {
       const products = user.cart.items.map((prod) => {
+        Product.findById(prod.productId).then((product) => {
+          product.quantity = product.quantity - prod.quantity;
+
+          return product.save();
+        });
         // Returning all data related to product
-        return { quantity: prod.quantity, product: { ...prod.productId._doc } };
+        return {
+          quantity: prod.quantity,
+          product: {
+            ...prod.productId._doc,
+          },
+        };
       });
       const order = new Order({
         user: {
           userId: req.user._id,
         },
         products: products,
+        total: req.user.cart.total,
       });
+
       return order.save();
     })
     .then((result) => {
@@ -74,11 +91,65 @@ exports.postOrder = (req, res, next) => {
       res.redirect('/orders');
     })
     .catch((err) => {
+      console.log(err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
 };
+
+exports.getOrderInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error('No order found'));
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(new Error('Unauthorized request'));
+      }
+      const invoiceName = orderId + '.pdf';
+      const invoicePath = path.join('src', 'data', 'invoices', invoiceName);
+
+      const pdfDoc = new PDFDocument();
+
+      res.setHeader('Content-Type', 'application/pdf');
+      // To open in browser
+      res.setHeader(
+        'Content-Disposition',
+        'inline; filename="' + invoiceName + '"'
+      );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc.fontSize(26).text('Invoice', {
+        underline: true,
+      });
+      pdfDoc.text('-')
+      order.products.forEach((prod) => {
+        pdfDoc
+          .fontSize(18)
+          .text(
+            `Title: ${prod.product.title} - Quantity: ${prod.quantity} x Price: ${prod.product.price} €`
+          );
+      });
+      pdfDoc.fontSize(26).text('-')
+      pdfDoc.fontSize(20).text(`Total price: ${order.total} €`);
+      pdfDoc.end();
+
+      // const file = fs.createReadStream(invoicePath);
+
+      // /* Data will be downloaded by the browser step by step, not preloaded */
+      // file.pipe(res);
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
 exports.clearCart = (req, res, next) => {
   req.user
     .clearCart()

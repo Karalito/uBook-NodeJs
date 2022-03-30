@@ -28,7 +28,6 @@ router.post(
     body('author', 'Author can only contain Letters')
       .matches(/^[A-Za-z\s]*$/)
       .trim(),
-    body('imgURL', 'Image must be url.').isURL(),
     body('description', 'Description cant be longer than 500 Characters')
       .isLength({ max: 500 })
       .trim(),
@@ -55,7 +54,6 @@ router.post(
     body('author', 'Author can only contain Letters')
       .matches(/^[A-Za-z\s]*$/)
       .trim(),
-    body('imgURL', 'Image must be url.').isURL(),
     body('description', 'Description cant be longer than 500 Characters')
       .isLength({ max: 500 })
       .trim(),

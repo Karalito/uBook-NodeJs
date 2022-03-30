@@ -9,6 +9,7 @@ const OrderSchema = new Schema({
       quantity: { type: Number, required: true },
     },
   ],
+  total: { type: Number, required: true },
   user: {
     userId: { type: Schema.Types.Object, required: true, ref: 'User' },
   },

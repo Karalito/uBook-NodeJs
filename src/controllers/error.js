@@ -5,6 +5,7 @@ exports.getError = (req, res, next) => {
     pageTitle: 'Page Not Found',
     path: '',
     isAuthenticated: req.session.isAuthenticated,
+    isAdmin: req.session.isAdmin,
   });
 };
 
@@ -13,5 +14,6 @@ exports.getError500 = (req, res, next) => {
     pageTitle: 'Error',
     path: '/500',
     isAuthenticated: req.session.isAuthenticated,
+    isAdmin: req.session.isAdmin,
   });
 };

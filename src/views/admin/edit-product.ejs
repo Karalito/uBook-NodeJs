@@ -11,7 +11,8 @@
       <h2> <% if (editing) { %>Update Product<% } else { %>Add Product<% } %> </h2>
       <form class="product-form" 
       action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" 
-      method="POST">
+      method="POST"
+      enctype="multipart/form-data">
         <div class="form-control">
           <label for="title">Title</label>
           <input
@@ -33,14 +34,13 @@
           value="<% if (editing || hasError) { %><%= product.author %><% } %>"/>
         </div>
         <div class="form-control">
-          <label for="imgURL">Image URL</label>
+          <label for="image">Image</label>
           <input
-          class="<%= validationErrors.find(e=>e.param === 'imgURL') ? 'invalid' : '' %>" 
-          type="text" 
-          name="imgURL" 
-          id="imgURL" 
-          required 
-          value="<% if (editing || hasError) { %><%= product.imgURL %><% } %>"/>
+          type="file" 
+          name="image" 
+          id="image"
+          accept="image/png, image/jpg, image/jpeg" 
+          />
         </div>
         <div class="form-control">
           <label for="description">Description</label>

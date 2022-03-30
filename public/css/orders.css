@@ -1,3 +1,12 @@
+.invoice {
+  text-decoration: underline;
+  text-transform: uppercase;
+  color: #0088a9;
+}
+.title{
+  color: black;
+  font-weight: 600;
+}
 .orders {
   list-style: none;
   padding: 0;
@@ -29,8 +38,7 @@
   color: #0088a9;
 }
 @media (max-width: 768px) {
-    .orders {
-      width: 100%;
-    }
-    
+  .orders {
+    width: 100%;
   }
+}

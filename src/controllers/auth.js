@@ -20,6 +20,7 @@ const transporter = nodemailer.createTransport(
 
 // Login
 exports.getLogin = (req, res, next) => {
+  if (req.user) return res.redirect('/');
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
@@ -66,7 +67,9 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             req.session.isAdmin = user.isAdmin;
             return req.session.save((err) => {
-              console.log(err);
+              if (err) {
+                console.log(err);
+              }
               res.redirect('/');
             });
           }
@@ -95,13 +98,16 @@ exports.postLogin = (req, res, next) => {
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
-    console.log(err);
+    if (err) {
+      console.log(err);
+    }
     res.redirect('/');
   });
 };
 
 // Register
 exports.getRegister = (req, res, next) => {
+  if (req.user) return res.redirect('/');
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
@@ -190,6 +196,7 @@ exports.postRegister = (req, res, next) => {
 // Account recovery
 
 exports.getRecover = (req, res, next) => {
+  if (req.user) return res.redirect('/');
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];

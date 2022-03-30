@@ -17,13 +17,18 @@
       </div>
       <% products.forEach(product => { %>
       <div class="cart-items">
+
         <div class="img-box">
-          <img src="<%= product.productId.imgURL %>" alt="<%= product.productId.title %>" style="width: 140px; height: 200px;" />
+          <img src="<%= product.productId.image %>" alt="<%= product.productId.title %>" style="width: 140px; height: 200px;" />
         </div>
+        
         <div class="about">
+          <a href="/products/<%= product.productId._id%>">
           <h2 class="title"><%= product.productId.title %></h2>
           <h3 class="description"><%= product.productId.description %></h3>
+        </a>
         </div>
+        
         <div class="counter">
           <div class="btn-counter">-</div>
           <div class="count"><%= product.quantity %></div>
@@ -37,6 +42,7 @@
             <button class="delete-btn" type="submit">X</button>
           </form>
         </div>
+
       </div>
       <% }) %>
       <hr>
