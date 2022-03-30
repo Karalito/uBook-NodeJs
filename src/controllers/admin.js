@@ -22,7 +22,6 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const quantity = req.body.quantity;
   const userId = req.user._id;
-  console.log(image);
   if (!image) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: `uBook - Add Product`,

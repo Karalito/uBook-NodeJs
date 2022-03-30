@@ -3,10 +3,13 @@ body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+  position: relative;
+  overflow: auto;
 }
 
 main {
   padding: 1rem;
+  min-height: 100vh;
 }
 
 span {
@@ -191,6 +194,8 @@ button:hover,
   color: #24252a;
 }
 .grid {
+  margin: auto;
+  width: 90%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -214,6 +219,24 @@ button:hover,
 .user-message--error {
   border-color: red;
   background: red;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 1rem;
+}
+.pagination a {
+  color: #24252a;
+  text-decoration: none;
+  padding: 0.5rem;
+  border: 1px solid #24252a;
+  margin: 0 1rem;
+}
+.pagination a:hover,
+.pagination a:active,
+.pagination a.active {
+  background: #0088a9;
+  color: white;
 }
 @media (max-width: 768px) {
   .main-header__nav {

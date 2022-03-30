@@ -1,0 +1,38 @@
+footer {
+  background: #24252a;
+  display: table;
+  text-align: center;
+  padding: 1rem 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: large;
+  position:relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  width: 100%;
+}
+
+.wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+footer {
+}
+footer small {
+  color: #ccc;
+  letter-spacing: 0.025rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.footer-nav a {
+  text-decoration: none;
+  margin: 0 0.5rem;
+  display: inline-block;
+}
+
+.footer-nav a:hover {
+  color: #0088a9;
+  transition: color 0.15s ease-in-out;
+}

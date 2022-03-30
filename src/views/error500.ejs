@@ -1,10 +1,19 @@
 <%- include('includes/head.ejs') %>
-  </head>
-  <body>
-    <%- include('includes/navigation.ejs') %>
-    <main>
-      <h1>ERROR OCCURED</h1>
-      <p>Our team is working on this problem, sorry for the inconvenience!</p>
-    </main>
-  </body>
-</html>
+<link rel="stylesheet" href="/css/error.css" />
+</head>
+
+<body>
+  <%- include('includes/navigation.ejs') %>
+  <main>
+    <h1> Internal Server Error</h1>
+    <p class="zoom-area"><b>500 Error</b> </p>
+    <section class="error-container">
+      <span><span>5</span></span>
+      <span>0</span>
+      <span><span>0</span></span>
+    </section>
+    <div class="link-container">
+      <a target="_blank" href="/" class="btn">Back to homepage</a>
+    </div>
+  </main>
+  <%- include('includes/footer.ejs') %>
