@@ -9,7 +9,6 @@ exports.getIndex = (req, res, next) => {
       products: products,
       pageTitle: 'uBook - Home',
       path: '/',
-
     });
   });
 };
@@ -21,7 +20,6 @@ exports.getProducts = (req, res, next) => {
       products: products,
       pageTitle: 'uBook - Products',
       path: '/products',
-
     });
   });
 };
@@ -33,7 +31,6 @@ exports.getProduct = (req, res, next) => {
       product: product,
       pageTitle: `uBook - ${product.title}`,
       path: '/products/:id',
-
     });
   });
 };
@@ -47,10 +44,13 @@ exports.getOrders = (req, res, next) => {
         path: '/orders',
         pageTitle: 'uBook - Your Orders',
         orders: orders,
-  
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postOrder = (req, res, next) => {
@@ -73,7 +73,11 @@ exports.postOrder = (req, res, next) => {
       req.user.clearCart();
       res.redirect('/orders');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 exports.clearCart = (req, res, next) => {
   req.user
@@ -81,7 +85,11 @@ exports.clearCart = (req, res, next) => {
     .then((result) => {
       res.redirect('/cart');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 // Cart Controllers
 
@@ -96,11 +104,12 @@ exports.getCart = (req, res, next) => {
         pageTitle: 'uBook - Cart',
         products: products,
         total: total,
-  
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -114,7 +123,9 @@ exports.postCart = (req, res, next) => {
       res.redirect('/cart');
     })
     .catch((err) => {
-      console.log('Err', err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -125,9 +136,17 @@ exports.postDeleteCartProduct = (req, res, next) => {
       req.user
         .deleteFromCart(product)
         .then((result) => res.redirect('/cart'))
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          const error = new Error(err);
+          error.httpStatusCode = 500;
+          return next(error);
+        });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 // Checkout Controllers

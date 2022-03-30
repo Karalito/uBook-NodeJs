@@ -92,9 +92,9 @@
   top: 0;
   right: 0;
   border-radius: 0px 0px 200px 200px;
-  transition: all 0.5s, border-radius 2s, top 1s;
+  transition: all 0.8s, border-radius 2s, top 1s;
   overflow: hidden;
-  cursor:help;
+  cursor: help;
 }
 
 .inside:hover {
@@ -102,7 +102,7 @@
   right: 0;
   top: 0;
   border-radius: 0;
-  height: 50%;
+  height: max-content;
 }
 
 .icon {
@@ -115,6 +115,5 @@
   color: white;
   padding: 5%;
   font-weight: 600;
+  width: 290px;
 }
-
-

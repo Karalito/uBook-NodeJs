@@ -9,23 +9,18 @@
         <a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a>
       </li>
       <li class="main-header__item">
-        <a class="<%= path === '/products' ? 'active' : '' %>" href="/products"
-          >Products</a
-        >
+        <a class="<%= path === '/products' ? 'active' : '' %>" href="/products">Products</a>
       </li>
       <% if (isAuthenticated) {%>
       <li class="main-header__item">
-        <a class="<%= path === '/orders' ? 'active' : '' %>" href="/orders"
-          >Orders</a
-        >
+        <a class="<%= path === '/orders' ? 'active' : '' %>" href="/orders">Orders</a>
       </li>
+      <% if (isAdmin) {%>
+
       <li class="main-header__item">
-        <a
-          class="<%= path === '/admin/products' ? 'active' : '' %>"
-          href="/admin/products"
-          >Admin</a
-        >
+        <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/products">Admin</a>
       </li>
+      <% } %>
       <li class="main-header__item">
         <a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a>
       </li>
@@ -37,9 +32,7 @@
       </li>
       <% }else{ %>
       <li class="main-header__item">
-        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login"
-          >Login</a
-        >
+        <a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
       </li>
       <% } %>
     </ul>
@@ -55,58 +48,34 @@
       </label>
       <ul class="menu__box">
         <li>
-          <a class="menu__item <%= path === '/' ? 'active' : '' %>" href="/"
-            >Home</a
-          >
+          <a class="menu__item <%= path === '/' ? 'active' : '' %>" href="/">Home</a>
         </li>
         <li>
-          <a
-            class="menu__item <%= path === '/products' ? 'active' : '' %>"
-            href="/products"
-            >Products</a
-          >
+          <a class="menu__item <%= path === '/products' ? 'active' : '' %>" href="/products">Products</a>
         </li>
         <% if (isAuthenticated) {%>
         <li>
-          <a
-            class="menu__item <%= path === '/orders' ? 'active' : '' %>"
-            href="/orders"
-            >Orders</a
-          >
+          <a class="menu__item <%= path === '/orders' ? 'active' : '' %>" href="/orders">Orders</a>
         </li>
+        <% if (isAdmin) {%>
         <li>
-          <a
-            class="menu__item <%= path === '/admin/products' ? 'active' : '' %>"
-            href="/admin/products"
-            >Admin</a
-          >
+          <a class="menu__item <%= path === '/admin/products' ? 'active' : '' %>" href="/admin/products">Admin</a>
         </li>
+        <% } %>
         <li>
-          <a
-            class="menu__item <%= path === '/cart' ? 'active' : '' %>"
-            href="/cart"
-            >Cart <span class="badge">3</span></a
-          >
+          <a class="menu__item <%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart <span class="badge">3</span></a>
         </li>
         <li>
           <form action="/logout" method="post">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <button
-              class="menu__item"
-              style="width: 100%; text-align: left"
-              type="submit"
-            >
+            <button class="menu__item" style="width: 100%; text-align: left" type="submit">
               Logout
             </button>
           </form>
         </li>
         <% }else{ %>
         <li>
-          <a
-            class="menu__item <%= path === '/login' ? 'active' : '' %>"
-            href="/login"
-            >Login</a
-          >
+          <a class="menu__item <%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
         </li>
         <% } %>
       </ul>

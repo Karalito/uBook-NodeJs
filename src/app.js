@@ -46,30 +46,41 @@ app.use(csrfProtection);
 app.use(conFlash());
 
 app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isAuthenticated;
+  res.locals.isAdmin = req.session.isAdmin;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
   User.findById(req.session.user._id)
     .then((user) => {
-      req.user = user;
+      if (user) req.user = user;
       next();
     })
-    .catch((err) => console.log(err));
-});
-
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isAuthenticated;
-  //req.locals.isAdmin = req.session.isAdmin;
-  res.locals.csrfToken = req.csrfToken();
-  next();
+    .catch((err) => {
+      next(new Error(err));
+    });
 });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.getError500);
 app.use(errorController.getError);
 
+// Error handling mw
+app.use((error, req, res, next) => {
+  res.status(500).render('error500', {
+    pageTitle: 'Error',
+    path: '/500',
+    isAuthenticated: req.session.isAuthenticated,
+  });
+});
 // Database connection
 mongoose
   .connect(MONGODB_URI)
